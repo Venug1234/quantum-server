@@ -12,21 +12,27 @@ def dbcreate():
     #return render_template("intro.html")
 '''
 
+
+
 @app.route("/register",methods=['GET','POST'])
 def register():
+    print("INSIDE REGISTER FUNCTION VENU ")
     if current_user.is_authenticated:
         return redirect(url_for('intro'))
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        #session = db.create_session({})
         db.session.add(user)
         time.sleep(2)
+        print("GOING FOR COMMIT  ")
         db.session.commit()
         time.sleep(2)
-        db.session.close()
+        #session.close_all()
         flash(f'Registration complete for {form.username.data}!','success')
         return redirect(url_for('login'))
+    print("INVLID SUBMIT")
     return render_template('register.html', title='Register', form=form)
 
 
@@ -34,7 +40,6 @@ def register():
 @app.route("/login", methods=['GET','POST'])
 def login():
     db.create_all()
-    db.session.close()
     if current_user.is_authenticated:
         return redirect(url_for('intro'))
     form = LoginForm()
