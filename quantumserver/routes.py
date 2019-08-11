@@ -5,14 +5,6 @@ from flask import render_template, flash, redirect, url_for
 from quantumserver.forms import RegistrationForm, LoginForm
 from flask_login import login_user, current_user, logout_user
 import time
-'''
-@app.route("/")
-def dbcreate():
-    db.create_all()
-    #return render_template("intro.html")
-'''
-
-
 
 @app.route("/register",methods=['GET','POST'])
 def register():
@@ -24,16 +16,13 @@ def register():
         user = User(username=form.username.data, email=form.email.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()
-        db.session.close()
         flash(f'Registration complete for {form.username.data}!','success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
-
-@app.route("/", methods=['GET','POST'])
+@app.route("/",methods=['GET','POST'])
 @app.route("/login", methods=['GET','POST'])
 def login():
-    db.create_all()
     if current_user.is_authenticated:
         return redirect(url_for('intro'))
     form = LoginForm()
